@@ -1,0 +1,32 @@
+// Variable overrides
+//#082152 dark blue
+//#0e224f
+//#29479e mid blue
+//#2f4998
+//#88a5ce light blue
+
+// Side Nav Bar
+.c-sidebar {//.c-sidebar-brand .c-sidebar-minimizar {
+    background: #082152 !important;
+    border: 5px solid #082152 !important;
+}
+
+.c-header {
+    background: #082152 !important;
+    color: white !important;
+}
+
+// .dialog-text {
+//     color: rgb(82, 82, 82) !important;
+// }
+// // Header Nav
+
+
+// Dashboard Body 
+$body-bg: #082152;  // background  
+$body-color: #88a5ce;  // text color
+
+$theme-colors: (
+  "primary": #29479e,
+  "secondary": #88a5ce
+);
