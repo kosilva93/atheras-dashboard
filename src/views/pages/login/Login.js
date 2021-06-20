@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import CIcon from "@coreui/icons-react";
-import logo from "src/assets/images/atheras-logo.png";
+import logo from '../../../assets/images/atheras-logo.png'; // Tell webpack this JS file uses this image
 import { setUserSession, useFormInput } from "src/api/utils";
 import apiAuth from "src/api/authentication";
 import {
@@ -16,11 +16,17 @@ import {
   CInputGroup,
   CInputGroupPrepend,
   CInputGroupText,
-  CRow,
-} from "@coreui/react";
+  CRow
+} from '@coreui/react'
+
+import * as userActions from '../../../store/users';
+import { useDispatch } from 'react-redux';
 
 const Login = (props) => {
-  const history = useHistory();
+  //const store = configureStore();
+  const dispatch = useDispatch();
+
+  const history = useHistory()
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const email = useFormInput("");
@@ -37,23 +43,16 @@ const Login = (props) => {
         // API call to authenticate the user
         setLoading(false);
         // Set the user session information. Storing the token and refresh token in sessionStorage
-        setUserSession(response.data.access_token, response.data.refresh_token);
-        // Take the user to Dashboard page
-        props.history.push("/dashboard");
-      })
-      .catch((error) => {
-        setLoading(false);
-        setError(error.data.message);
-      });
+        dispatch(userActions.userAdded({
+            access_token: response.data.access_token,
+            refresh_token: response.data.refresh_token
+          }))
+        props.history.push('/dashboard');
+    }).catch(error => {
+      setLoading(false);
+      setError(error.data.message);
+    });
   };
-
-  // const api = new Api();
-
-  // const fetchUser = () => {
-  //   api.getUserList().then((response) =>
-  //   console.log(response)).catch((err) =>
-  //   console.log(err));
-  // };
 
   return (
     <div>
@@ -103,12 +102,12 @@ const Login = (props) => {
                         />
                       </CInputGroup>
                       <p className="text-muted">
-                        <a href="http://127.0.0.1:3000/#/register">
+                        <a href="/#/register">
                           Register here
                         </a>
                       </p>
                       <p className="text-muted">
-                        <a href="http://127.0.0.1:3000/#/forgot_password">
+                        <a href="/#/forgot_password">
                           Forgot password
                         </a>
                       </p>

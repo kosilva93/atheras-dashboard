@@ -42,8 +42,10 @@ const Station = React.lazy(() => import('./views/pages/station/Station'));
 const ForgotPassword = React.lazy(() => import('./views/pages/forgot_password/ForgotPassword'));
 const ResetPassword = React.lazy(() => import('./views/pages/reset_password/ResetPassword'));
 const Config = React.lazy(() => import('./views/config/Config'));
+const Login = React.lazy(() => import('./views/pages/login/Login'));
 
 const routes = [
+  { path: '/login', exact: true, name: 'Login', component: Login },
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/config', name: 'Configuration', component: Config },

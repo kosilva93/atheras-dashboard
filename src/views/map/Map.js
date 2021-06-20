@@ -2,37 +2,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from 'mapbox-gl';
 import './Map.css';
+import { useSelector } from 'react-redux'
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API;
 
-const Mapbox = () => {
+const Mapbox = ({stationID}) => {
 
-//   const [viewport, setViewport] = React.useState({
-//     latitude: 37.7577,
-//     longitude: -122.4376,
-//     zoom: 8
-//   });
+  const stations = useSelector(state => {
+    if(stationID) {
+      return state.stations.filter(item => item.id === parseInt(stationID))
+    } else return state.stations
+  })
 
-//   let popup = new mapboxgl.Popup({ offset: 2 }).setText(
-//     "SST: {{ lb.SST|floatformat:'2' }}"
-//  );    
-
-//  let marker = new mapboxgl.Marker()
-//                 .setLngLat(["{{ gs.longitude|floatformat:'2' }}", "{{ gs.latitude|floatformat:'2' }}"])
-//                 .setPopup(popup)
-//                 .addTo(map);
-
-//   return (
-//     <ReactMapGL
-//       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_API}
-//       {...viewport}
-//       width="100%"
-//       height="92%"
-//       onViewportChange={(viewport) => setViewport(viewport)}
-//     />
-//   );
-
-const mapContainerRef = useRef(null);
+  const mapContainerRef = useRef(null);
 
   const [lng, setLng] = useState(5);
   const [lat, setLat] = useState(34);
@@ -51,18 +33,41 @@ const mapContainerRef = useRef(null);
     map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
     // Add fullscreen control
-    //map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector('main')}));
     map.addControl(new mapboxgl.FullscreenControl());
 
-    // Add pop up
-    let popup = new mapboxgl.Popup({ offset: 2 }).setText('SST: 5 dB')
+    // // add markers to map
+    stations.forEach(item => {
+      // Add pop up
+      let popup1 = new mapboxgl.Popup({ offset: 2 }).setHTML(
+        `<h6>${item.station.LocationName}</h6>
+    <br />
+    <p>Latitude: ${item.station.Latitude}<br/>
+    Longitude: ${item.station.Longitude}<br/>
+    Frequency: ${item.frequency} GHz<br/>
+    Satellite: ${item.satellite.Name}<br/>
+    SST: ${item.station.SST}</p>`
+      )
 
-    // Add marker
-    let marker = new mapboxgl.Marker()
-                //.setLngLat(["{{ gs.longitude|floatformat:'2' }}", "{{ gs.latitude|floatformat:'2' }}"])
-                .setLngLat([-0.118092, 51.509865])
-                .setPopup(popup)
-                .addTo(map);
+      let popup2 = new mapboxgl.Popup({ offset: 2 }).setHTML(
+        `<h6>${item.satellite.Name}</h6>
+    <br />
+    <p>Frequency: ${item.frequency} GHz<br/>
+    Ground Station Communicating: ${item.station.LocationName}</p>`
+      )
+
+      // make a marker for each station
+      new mapboxgl.Marker()
+        .setLngLat([item.station.Longitude, item.station.Latitude])
+        .setPopup(popup1)
+        .addTo(map);
+
+      // make a marker for each satellite
+      new mapboxgl.Marker({ color: 'black' })
+        .setLngLat([0, item.satellite.Longitude])
+        .setPopup(popup2)
+        .addTo(map);
+
+    });
 
     map.on('move', () => {
       setLng(map.getCenter().lng.toFixed(4));
@@ -72,7 +77,7 @@ const mapContainerRef = useRef(null);
 
     map.on('load', () => {
       map.resize();
-  });
+    });
 
     // Clean up on unmount
     return () => map.remove();
@@ -83,7 +88,6 @@ const mapContainerRef = useRef(null);
       <div className='map-container' ref={mapContainerRef} />
     </div>
   );
-
 };
 
 export default Mapbox;

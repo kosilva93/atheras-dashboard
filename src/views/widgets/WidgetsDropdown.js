@@ -13,8 +13,8 @@ const WidgetsDropdown = () => {
   // render
   return (
     <CRow  className=".flex-row">
-      <CCol>
-          <CCard>
+      <CCol lg="3">
+      <CCard style={{ height: '550px', width: '250px'}}>
             <CCardHeader>
               Card title
             </CCardHeader>
@@ -26,11 +26,12 @@ const WidgetsDropdown = () => {
             <CCardFooter>Card footer</CCardFooter>
           </CCard>
         </CCol>
-        <CCol>
-            <Mapbox />
+        <CCol lg="6">
+            {/* <Mapbox style={{ height: '600px', width: '800px'}} /> */}
+            <Mapbox stationID={null} style={{ height: '550px'}}/>
       </CCol> 
-      <CCol> 
-          <CCard>
+      <CCol lg="3"> 
+      <CCard style={{ height: '550px', width: '250px'}}>
             <CCardHeader>
               Card title
             </CCardHeader>

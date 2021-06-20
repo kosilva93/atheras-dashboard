@@ -4,10 +4,12 @@ import { CCard } from '@coreui/react'
   import CIcon from '@coreui/icons-react'
 
 import apiConfig from '../../api/configuration';
+import { useSelector } from 'react-redux';
 
 const ErrorMessage = lazy(() => import('./ErrorMessage'));
 
 const DeleteModal = (config) => {
+    const token = useSelector(state => state.users.access_token);
     const [error, setError] = useState(null);
 
     config = config.config;
@@ -20,7 +22,7 @@ const DeleteModal = (config) => {
 
     const toggleButtonState = () => {
         // console.log('deleting ' + JSON.stringify(config));
-        apiConfig.deleteConfiguration(config.cfg_id).then(() => {
+        apiConfig.deleteConfiguration(token, config.cfg_id).then(() => {
             handleClose();
         }).catch(error => {
             console.log('deleteConfiguration error: ' + JSON.stringify(error));

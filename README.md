@@ -6,7 +6,7 @@
 
 This project offers a dashboard to interact with the satellite networks.
 
-## Server 
+## Server
 
 ### Set up
 
@@ -23,7 +23,7 @@ ibmcloud ks cluster config -c devCluster --admin
 oc port-forward <pod_name> 9000:9000
 ```
 
-### Usage 
+### Usage
 
 The Server APIs will now be available on `localhost:9000`
 
@@ -36,17 +36,17 @@ The Atheras Dashboard was created from [CoreUI Free React Admin Template v3](htt
 1. Clone repo
 
    ``` bash
-   $ git clone https://github.ibm.com/Kevin-Silva/atheras-dashboard.git
+   git clone https://github.ibm.com/Kevin-Silva/atheras-dashboard.git
    ```
 
 2. Compile Application
 
    ```bash
    # go into app's directory
-   $ cd atheras-dashboard
+   cd atheras-dashboard
 
    # install app's dependencies
-   $ npm install
+   npm install
    ```
 
 3. Create a `.env.local` file in `atheras-dashboard` directory with 
@@ -58,8 +58,8 @@ The Atheras Dashboard was created from [CoreUI Free React Admin Template v3](htt
 4. Start client
 
    ```bash
-   # dev server with hot reload at http://localhost:3000
-   $ REACT_APP_PORT=9000 npm start
+   export REACT_APP_ATHERAS_SERVER_URL=http://127.0.0.1:9000
+   npm start
    ```
 
 ### Usage

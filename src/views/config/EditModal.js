@@ -3,11 +3,13 @@ import { Modal, Button, Dropdown, ButtonGroup } from 'react-bootstrap'
 import { CInput } from '@coreui/react'
 
 import apiConfig from '../../api/configuration';
+import { useSelector } from 'react-redux';
 
 const DeleteModal = lazy(() => import('./DeleteModal'));
 const ErrorMessage = lazy(() => import('./ErrorMessage'));
 
 const EditModal = (config) => {
+    const token = useSelector(state => state.users.access_token);
     const [error, setError] = useState(null);
 
     config = config.config;
@@ -42,7 +44,7 @@ const EditModal = (config) => {
         };
 
         // console.log('patching with ' + JSON.stringify(editConfiguration));
-        apiConfig.updateConfiguration(config.cfg_id, editConfiguration).then(() => {
+        apiConfig.updateConfiguration(token, config.cfg_id, editConfiguration).then(() => {
             handleClose();
         }).catch(error => {
             console.log('updateConfiguration error: ' + JSON.stringify(error));

@@ -3,10 +3,12 @@ import { Modal, Button } from 'react-bootstrap'
 import { CInput } from '@coreui/react'
 
 import apiConfig from '../../api/configuration';
+import { useSelector } from 'react-redux';
 
 const ErrorMessage = lazy(() => import('./ErrorMessage'));
 
 const CreateModal = () => {
+    const token = useSelector(state => state.users.access_token);
     const [error, setError] = useState(null);
 
     const ConfigurationTitle = useFormInput(''),
@@ -53,7 +55,7 @@ const CreateModal = () => {
         };
 
         // console.log(newConfiguration);
-        apiConfig.addConfiguration(newConfiguration).then(() => {
+        apiConfig.addConfiguration(token, newConfiguration).then(() => {
             handleClose();
         }).catch(error => {
             console.log('addConfiguration error: ' + JSON.stringify(error));

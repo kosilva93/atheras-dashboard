@@ -1,16 +1,18 @@
 import React, { lazy, useState, useEffect } from 'react';
 import { CCard } from '@coreui/react';
 import apiConfig from '../../api/configuration';
+import { useSelector } from 'react-redux';
 
 const EditModal = lazy(() => import('./EditModal'));
 const CreateModal = lazy(() => import('./CreateModal'));
 
 const Config = () => {
+  const token = useSelector(state => state.users.access_token);
   const [stationConfigurations, setConfigurationData] = useState([]);
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    apiConfig.getAllConfiguration().then(response => {
+    apiConfig.getAllConfiguration(token).then(response => {
       setConfigurationData(response)
       setHasError(false)
     }).catch(error => {

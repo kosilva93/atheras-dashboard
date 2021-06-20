@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CCreateElement,
@@ -15,7 +15,7 @@ import {
 
 import { ReactComponent as FullLogo } from './logo-negative-new.svg';
 //import { ReactComponent as IconLogo } from './logo-only.svg';
-import apiConfig from '../api/configuration';
+import * as uiActions from '../store/ui'
 
 // sidebar nav config
 import navigation from './_nav'
@@ -23,32 +23,38 @@ import navigation from './_nav'
 const TheSidebar = () => {
   const dispatch = useDispatch()
   const show = useSelector(state => state.sidebarShow)
-  //const [newNavigation, setNewNavication] = useState([])
+  const stations = useSelector(state => state.stations)
+  let cleanNavigation = navigation;
+  let newNavigation = cleanNavigation;
+
 
   useEffect(() => {
     // Get the stations from the api and dynamically populate sidebar navigation
-    apiConfig.getAllConfiguration().then(response => {
-      // Check if navigation is still the same. Error handling
-      if (navigation.length === 2) {
-      response.foreach( item => {
-        navigation.push({
-          _tag: 'CSidebarNavItem',
-          name: item.cfg_scenario_parameters.Station.LocationName,
-          to: '/station/' + item.cfg_id,
-          icon: 'cil-location-pin',
-        })
-      })
-    }
-    }).catch(error => {
-      // TO-DO
-        //setHasError(true)
-    })
+    // apiConfig.getAllConfiguration(token).then(response => {
+    //   // Check if navigation is still the same. Error handling
+      
+    // }).catch(error => {
+    //   // TO-DO
+    //     //setHasError(true)
+    // })
   }, [])
+
+  if (navigation.length === 3) {
+    stations.forEach( item => {
+    navigation.push({
+      _tag: 'CSidebarNavItem',
+      name: item.station.LocationName,
+      to: '/station/' + item.id,
+      icon: 'cil-location-pin'
+    })
+  })
+}
+//}
 
   return (
     <CSidebar
       show={show}
-      onShowChange={(val) => dispatch({type: 'set', sidebarShow: val })}
+      onShowChange={(val) => dispatch(uiActions.set({ sidebarShow: val }))}
     >
       <CSidebarBrand className="d-md-down-none" to="/dashboard">
       <CImg className="c-sidebar-brand-full" height={50} width={"100%"}>
@@ -59,7 +65,7 @@ const TheSidebar = () => {
       <CSidebarNav>
 
         <CCreateElement
-          items={navigation}
+          items={newNavigation}
           components={{
             CSidebarNavDivider,
             CSidebarNavDropdown,

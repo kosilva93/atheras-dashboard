@@ -9,31 +9,28 @@ import {
 import MainChartExample from '../../charts/MainChartExample.js'
 import PieChart from '../../charts/PieChart.js'
 import Mapbox from '../../map/Map';
-import apiConfig from '../../../api/configuration'
+import { useSelector } from 'react-redux';
+
 
 //const WidgetsDropdown = lazy(() => import('../../widgets/WidgetsDropdown.js'))
 //const WidgetsBrand = lazy(() => import('../../widgets/WidgetsBrand.js'))
 
 const Station = ({ match }) => {
+  const station = useSelector(state => state.stations.find(item => item.id === parseInt(match.params.id)));
   // const station = stations.find(item => item.id.toString() === match.params.id)
   // const stationDetails = station ? station :
   //   [['id', (<span><CIcon className="text-muted" name="cui-icon-ban" /> Not found</span>)]];
   const [stationDetails, setStation] = useState([])
 
   useEffect(() => {
-    apiConfig.getConfiguration(match.params.id).then(response => {
-      setStation({
-        id: response.cfg_id,
-        name: response.cfg_scenario_parameters.Station.LocationName,
-        latitude: response.cfg_scenario_parameters.Station.Latitude,
-        longitude: response.cfg_scenario_parameters.Station.Longitude,
-        sattelite: response.cfg_scenario_parameters.Satelite.Name,
-        frequency: response.cfg_scenario_parameters.Frequency,
-        SST: response.cfg_scenario_parameters.Station.SST
-      })
-    }).catch(error => {
-      // TO-DO
-      //setHasError(true)
+    setStation({
+      id: station.id,
+      name: station.station.LocationName,
+      latitude: station.station.Latitude,
+      longitude: station.station.Longitude,
+      satellite: station.satellite.Name,
+      frequency: station.frequency,
+      SST: station.station.SST
     })
   }, [match.params.id])
 
@@ -49,7 +46,7 @@ const Station = ({ match }) => {
           </CCard>
         </CCol>
         <CCol>
-          <Mapbox />
+          <Mapbox stationID={match.params.id} />
         </CCol>
       </CRow>
       <CRow>
@@ -107,7 +104,7 @@ const Station = ({ match }) => {
                       <div className="small text-muted">Satellite</div>
                     </td>
                     <td>
-                      <div className="small text-muted">{stationDetails.sattelite}</div>
+                      <div className="small text-muted">{stationDetails.satellite}</div>
                     </td>
                   </tr>
                   <tr>

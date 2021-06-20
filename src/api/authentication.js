@@ -1,14 +1,9 @@
-import axios from "axios";
-//import { getToken } from "./utils";
+import axios from 'axios';
 
 // Define your api url from any source.
 // Pulling from your .env file when on the server or from localhost when locally
-const BASE_URL = "http://127.0.0.1:" + process.env.REACT_APP_PORT + "/api/v1";
-
-// TO-DO
-// const config = {
-//   headers: { Authorization: `Bearer ${getToken()}` },
-// };
+// const BASE_URL = `http://127.0.0.1:${process.env.REACT_APP_PORT}/api/v1`;
+const BASE_URL = `${process.env.REACT_APP_ATHERAS_SERVER_URL}/api/v1`;
 
 const apiAuth = {
   /** @param {string} resource */
@@ -17,7 +12,6 @@ const apiAuth = {
     return axios
       .post(`${BASE_URL}/authentication/login/`, body)
       .then((response) => {
-        console.log("response: ", response.data);
         return response.data;
       })
       .catch((error) => {

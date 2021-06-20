@@ -8,50 +8,82 @@ import {
 } from '@coreui/react'
 
 import MainChartExample from '../charts/MainChartExample.js'
-import apiConfig from '../../api/configuration'
+//import store from 'src/store.js';
+import { useSelector } from 'react-redux';
+
 
 const WidgetsDropdown = lazy(() => import('../widgets/WidgetsDropdown.js'))
 //const WidgetsBrand = lazy(() => import('../widgets/WidgetsBrand.js'))
 
 
+
 const Dashboard = () => {
+  const stations = useSelector(state => state.stations)
   const [stationConfigurations, setConfigurationData] = useState([]);
   const [hasError, setHasError] = useState(false);
+  const ws = new WebSocket('ws://localhost:3000/ws')
   // const [totalItems, setTotalItems] = useState(0);
   // const [currentPage, setCurrentPage] = useState(1);
   // const itemPerPage = 1;
 
-  useEffect(() => {
-    apiConfig.getAllConfiguration().then(response => {
-      setConfigurationData(response)
-      setHasError(false)
-    }).catch(error => {
-        setHasError(true)
-    })
-  }, [])
-
   let itemsToRender;
 
-  if (hasError) {
-    itemsToRender = <tr><td>Error occured</td></tr>
-  } else if (stationConfigurations) {
-    itemsToRender = stationConfigurations.map(item => {
+  useEffect(() => {
+      ws.onopen = () => {
+      // on connecting, do nothing but log it to the console
+      console.log('connected')
+      }
+
+      ws.onmessage = evt => {
+      // listen to data sent from the websocket server
+      const message = JSON.parse(evt.data)
+      this.setState({dataFromServer: message})
+      console.log(message)
+      }
+
+      ws.onclose = () => {
+      console.log('disconnected')
+      // automatically try to reconnect on connection loss
+
+      }
+  }, [])
+
+  if (stations) {
+    itemsToRender = stations.map(item => {
       return (
-        <tr key={item.cfg_id}>
-          <td><div className="small text-muted">{item.cfg_scenario_parameters.Station.LocationName}</div></td>
-          <td>{item.cfg_scenario_parameters.Frequency}</td>
-          <td>{item.cfg_scenario_parameters.Station.SST}</td>
-          <td>{item.cfg_scenario_parameters.Schedule.SamplingTime}</td>
+        <tr key={item.id}>
+          <td><div className="small text-muted">{item.station.LocationName}</div></td>
+          <td>{item.frequency}</td>
+          <td>{item.station.SST}</td>
+          <td>{item.schedule.SamplingTime}</td>
         </tr>
       )
     });
-  } else {
-    itemsToRender = "Loading...";
   }
+
+  // if (hasError) {
+  //   itemsToRender = <tr><td>Error occured</td></tr>
+  // } else if (stations) {
+  //   console.log("Inside render func", stations)
+  //   itemsToRender = stations.map(item => {
+  //     return (
+  //       <tr key={item.id}>
+  //         <td><div className="small text-muted">{item.station.LocationName}</div></td>
+  //         <td>{item.frequency}</td>
+  //         <td>{item.station.SST}</td>
+  //         <td>{item.schedule.SamplingTime}</td>
+  //       </tr>
+  //     )
+  //   });
+  // } else {
+  //   itemsToRender = "Loading...";
+  // }
 
   return (
     <>
-      <WidgetsDropdown />
+    <div style={{height: '600px'}}>
+    <WidgetsDropdown />
+    </div>
       <CCard>
         <CCardBody>
           
